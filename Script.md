@@ -1,6 +1,6 @@
 ## Presentation Script: Solving the Image Processing Problem with Numerical Techniques
 
-### [Slide 1: Introduction]
+[Slide 1: Introduction]
 - Good morning/afternoon, everyone!
 - Today, I will be presenting a solution to an image processing problem using numerical techniques.
 - In particular, we will explore how numerical integration, numerical interpolation, and non-linear systems of equations play a crucial role in image processing algorithms.
