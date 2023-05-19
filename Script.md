@@ -1,59 +1,43 @@
-## Presentation Script: Solving the Image Processing Problem with Numerical Techniques
-
 ### Introdução
 
-Olá Boa tarde o meu nome é Júlio e estou aqui para apresentar o trabalho realizado por mim e pelos meus colegas, Duarte, Francisco, Rui e Daniel na unidade curricular de Métodos Numéricos e Otimizações Não Lineares.
+Olá a todos. O meu nome é Júlio e hoje estou aqui para apresentar o projeto desenvolvido no contexto da UC de Métodos Numéricos e Otimização não Linear do ano letivo 2022/2023.
+
 
 ### Definição do tema
 
-Originalmente pensamos em falar sobre previsões meteorológicas, porém foi nos aconselhado escolher outro tema devido à dificuldade do mesmo.
-Por esse motivo decidimos seguir o tema **Processamento de Imagem**. Este tema aplica diversos conceitos da UC porém achamos mais relevante focarmo nos nos temas de integrais numéricos, interpolação numérica e sistemas não lineares de equações.
+Optamos por não utilizar muito o ChatGPT nesta fase de desenvolvimento. Isto pois, procurávamos um tema mais genuíno e em que todos os membros do grupo tivessem interesse. Depois de alguma pesquisa, percebemos que as previsões metereológicas têm uma componente matemática muito forte e que, por isso, seria um bom tema para o projeto. No entanto, as equações que descrevem o comportamento da atmosfera (Navier-Stokes) são muito complexas e, portanto, decidimos abandonar a ideia. Encontramos, depois, outra ideia bastante interessante também - processamento de imagem. De facto, grande parte dos softwares utilizados hoje em dia, como o GIMP ou o Photoshop, utilizam métodos numéricos para processar imagens. 
+Pensamos que perguntar ao ChatGPT sobre se este conceito aplicava conceitos matemáticos lecionados na UC, faria todo o sentido. A resposta foi positiva.
 
 ### Modelação do problema
 
-De maneira a desenvolver este tema decidimos modelar um problema. Com ajuda do ChatGPT, chegamos a um problema que o objetivo é desenvolver um algoritmo para imagens pretas e brancas de *upscaling* e *denoising* das mesmas. Para isto é necessário aplicar os conceitos aprendidos na Unidade Curricular definidos previamente.
+Uma vez que processamento de imagem é um conceito muito vago, tivemos de nos focar em alguns aspetos mais específicos. Com a ajuda do ChatGPT, percebemos que podíamos abordar o processamento de imagem de duas formas: resizing e smoothing. O primeiro processo consiste em aumentar a dimensão da imagem (não confundir com resolução) e o segundo em diminuir a quantidade de ruído presente na imagem. É interessante relembrar que existem outros tipos de processamento, tais como: filtering (aplicação de filtros), sharpening (aumento da nitidez) e color adjustment (ajuste de cores).
 
-Originalmente tinhamos como objetivo focar nos sobretudo na parte de integração numérica e sistemas não lineares de equações. Porém deparamo nos com alguns problemas no desenvolvimento do código Matlab.
+### Codificação MATLAB
 
-Sendo assim decidimos alterar o nosso foco para um algoritmo que principalmente aplica conceitos de interpolação e integração númerica.
+Nesta fase, utilizamos bastante o ChatGPT. No entanto, o nosso espírito crítico foi crucial. Aconteceu imensas vezes da ferramenta nos dar código que ou não funcionava ou não realizava o que prometia. Por isso, tivemos de fazer várias alterações ao código que nos foi dado.
 
-De maneira a desenvolver o nosso código precisamos de arranjar uma imagem que tenha dimensões pequenas e que tenha bastante ruído.
-Para isso vamos utilizar esta imagem de um homem a olhar por um telescópio.
+### Imagem original
 
-### Solução
+Esta é a imagem inicial que vamos utilizar para demonstrar o funcionamento dos nossos scripts codificados em MATLAB. A imagem contém bastante granularidade e, por isso, é um bom exemplo para demonstrar o funcionamento do smoothing. A imagem tem também as dimensões 256x243 pixels, o que irá dar jeito para demonstrar o funcionamento do resizing.
 
-Da primeira vez que tentamos desenvolver uma solução para o problema deparamo nos que não estavamos a conseguir desenvolver um código que preenchesse todos os requesitos que definimos na modelação do problema. Por esse motivo decidimos fazer uma pesquisa mais avançada nos métodos usados para os efeitos de *upscailing* e *denoising*.
+### Resizing
 
-Deparamo nos com bastantes conhecimentos que são desenvolvidos na unidade curricular ao longo da nossa pesquisa. 
+Como indicado anteriormente, este processo tem como objetivo aumentar a dimensão de uma imagem. Esta é a imagem original depois de passar por esse mesmo processo. Como é possível ver pelo código MATLAB, existe um fator de scaling que é aplicado à imagem. Neste caso, o fator é 2, o que significa que a imagem final terá o dobro da dimensão da imagem original. O MATLAB contém a rotina imresize, que nos ajudou bastante. A mesma recebe como argumentos uma image, um fator de scaling e uma função de interpolação. 
+Optamos por utilizar a função bicúbica, que é a mais utilizada para este tipo de processamento. Essencialmente, são calculados coeficientes para cada cada pixel da imagem original (normalmente, recorre-se a funções como a B-spline para esse cálculo) e, com base nesses coeficientes, é possível interpolar o valor de um pixel numa posição qualquer da imagem final.
 
-Como podemos ver no nosso código, utilizamos interpolação bicúbica. Esta interpolação deriva diretamente do conceito de splines. Ainda mais esta é bastante utilizada no *upscaling* de imagens. 
+### Resizing com funções diferentes
 
-Na matemática a interpolação bicúbica é uam extensão da interpolação spline cúbica para interpotlar pontos de daos numa grelha bidimensional. Comparada a interpolação bilinear a superfície interpolada fica mais suave. Podemos desenvolver esta utilizando polinómios de Lagrange, splines cúbicos ou o algoritmo de convolução cúbico.
+Como forma de curiosidade, apresentamos aqui a utilização de outras funções, tais como a bilinear e a nearest neighbor. A primeira é a mais simples de todas, pois apenas calcula a média dos 4 pixels mais próximos. A segunda, por sua vez, apenas copia o valor do pixel mais próximo. Como é possível ver, a imagem final não é tão boa como a anterior. Isto porque, a função bicúbica é a que melhor preserva a informação da imagem original.
 
-Ainda mais maneira a criar diminuir o ruído utilizamos um filtro mediano.
-Este filtro ao contrário de outros filtros, usa a mediana da vizinhança para trocar o valor do píxel onde está a iterar.
+### Smoothing
 
-Depois disso aplicamos um Filtro Gaussiano, este ao contrário do filtro mediano utiliza uma média pesada para substituir os valores do píxel.
+Este processo tem como objetivo diminuir a quantidade de ruído presente numa imagem. Para isso, decidimos utilizar um método _patch-based_. Este método consiste em dividir a imagem em vários _patches_ (pequenas imagens) e, para cada um deles, calcular o valor médio dos seus pixels. O valor médio é, então, atribuído a todos os pixels do _patch_. Este processo é repetido para todos os _patches_ da imagem. O valor médio é obtido calculando a área de cada _patch_ e dividindo-a pela soma dos valores de todos os seus pixels. Uma vez que a expressão analítica da área não é conhecida, optamos por utilizar integração numérica, mais precisamente a regra do trapézio.
+Esta imagem é o resultado final do processo de smoothing. Como é possível ver, a granularidade da imagem original foi bastante reduzida. No entanto, o processo não é perfeito e, por isso, ainda é possível ver algum ruído na imagem final. De facto, a existência de um processo perfeito é impossível, já que a granularidade é uma característica inerente a qualquer imagem.
 
-De maneira a concluir este algoritmo ainda aplicamos integração numérica de maneira a aumenta o efeito de *smoothing*. Para isto utilizamos a regra do trapézio de maneira a estimar o valor médio de uma área de pixeis.
+### ChatGPT como ferramenta de aprendizagem
 
-Ainda mais no código temos simplesmente comandos de maneira a demonstrar e a guardar o output dos ficheiros no sistema.
+É impressionante a forma como a inteligência artificial tem avançado nos últimos tempos. O ChatGPT é um exemplo disso mesmo. No entanto, é importante referir que o ChatGPT não é perfeito. De facto, é necessário ter algum conhecimento prévio sobre o tema para conseguir filtrar o que é útil e o que não é. Sentimos muito isto aquando do desenvolvimento do código em MATLAB. Uma vez que ele apenas consegue desenvolver o código e não literalmente testá-lo, os resultados dados nem sempre foram os melhores. Acredito que, no futuro, esta barreira irá ser ultrapassada. Para terminar, diria que é inegável dizer que, eventualmente, este tipo de tecnologias irão fazer parte do ensino superior.
 
-### Resultados
+### Conclusão
 
-Como podemos observar nos slides temos aqui alguns dos resultados do processamento do algoritmo, incluindo alguns dos passos intermédios do mesmo.
-
-### Otimizações ChatGPT
-
-De maneira a utilizar o ChatGPT o melhor possível achamos que seria interessante recorrer ao mesmo de forma a melhorar o nosso código. Para isso demos lhe o contexto do trabalho e o código desenvolvido, porém mesmo assim deparamo nos com o facto que este confudia temas como integração numérica e acabava por retirar usos da mesma, por exemplo como podemos ver no código este retira a utilização da regra do trapézio.
-
-Desta forma achamos que seria então melhor mantermo nos pelo nosso código.
-
-### Conclusões
-
-Como podemos ver pelo desenvolvimento do algoritmo acreditamos que cumprimos o objetivo, porém durante este processo apercebemo-nos que no contexto de Processamento de Imagem, os conceitos lecionados na UC podem ser muito úteis.
-
-Ainda mais, ao longo do projeto conseguimos formar uma melhor apreciação pelo ChatGPT como uma ferramenta de auxílio no desenvolvimento de trabalhos, algo bastante refrescante do que simplesmente limitar o uso do mesmo. Porém chegamos a conclusão que nem sempre este está correto por isso devemos levar as informações concluídas através do mesmo não como uma verdade absoluta. Desta forma consideramos que este é uma ferramenta bastante útil mas como qualquer ferramenta é necessário saber usá-la.
-
-Para concluir creio que este trabalho foi bastante inovador nos métodos que nos pediram para o desenvolver e a nosso ver foi um trabalho bastante engraçado de fazer. Acreditamos que o que aprendemos relativamente ao uso do ChatGPT como aos conceitos da unidade curricular virão a ser uteis no nosso futuro académico e profissional.
-
+Em suma, este projeto foi bastante interessante. Aprender sobre como softwares de processamento de imagem, que usamos quase diariamente, funcionam foi bastante interessante. Aprendemos também que o ChatGPT é uma ferramenta muito útil, mas que ainda tem muito para evoluir. Obrigado a todos e até à próxima.
