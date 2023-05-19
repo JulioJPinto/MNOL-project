@@ -1,50 +1,59 @@
 ## Presentation Script: Solving the Image Processing Problem with Numerical Techniques
 
-[Slide 1: Introduction]
-- Good morning/afternoon, everyone!
-- Today, I will be presenting a solution to an image processing problem using numerical techniques.
-- In particular, we will explore how numerical integration, numerical interpolation, and non-linear systems of equations play a crucial role in image processing algorithms.
-- Let's dive into the problem and the MATLAB solution I've developed.
+### Introdução
 
-[Slide 2: Problem Description]
-- Our task is to optimize image interpolation while still utilizing numerical interpolation and numerical integration.
-- The provided code takes an input image and performs several operations: upscaling, smoothing, and median filtering.
-- However, we aim to enhance the code's efficiency without compromising the use of numerical techniques.
+Olá Boa tarde o meu nome é Júlio e estou aqui para apresentar o trabalho realizado por mim e pelos meus colegas, Duarte, Francisco, Rui e Daniel na unidade curricular de Métodos Numéricos e Otimizações Não Lineares.
 
-[Slide 3: The Original Code]
-- Let's take a quick look at the original code:
-  - The code begins by reading the original image and defining various parameters.
-  - It then converts the image to double precision and performs upscaling using bicubic interpolation.
-  - Next, it applies a Gaussian filter for smoothing, utilizing numerical integration through nested loops.
-  - Lastly, it applies a median filter with custom settings and displays the results.
+### Definição do tema
 
-[Slide 4: Optimization Approach]
-- To optimize the code, we'll modify it while preserving the essential elements of numerical interpolation and numerical integration.
-- The modified code employs numerical interpolation using the nearest-neighbor method for upscaling.
-- It replaces the nested loops for smoothing with a built-in function, 'imfilter,' which applies a Gaussian filter to the image.
-- Finally, it retains the median filtering step with custom settings.
-- These modifications should improve efficiency while maintaining the desired numerical techniques.
+Originalmente pensamos em falar sobre previsões meteorológicas, porém foi nos aconselhado escolher outro tema devido à dificuldade do mesmo.
+Por esse motivo decidimos seguir o tema **Processamento de Imagem**. Este tema aplica diversos conceitos da UC porém achamos mais relevante focarmo nos nos temas de integrais numéricos, interpolação numérica e sistemas não lineares de equações.
 
-[Slide 5: The Optimized Code]
-- Here is the optimized code:
-  - We start with reading the original image and setting the required parameters.
-  - The image is converted to double precision as before.
-  - Instead of bicubic interpolation, we utilize nearest-neighbor interpolation for upscaling.
-  - A Gaussian filter is created, and the 'imfilter' function is used to apply the filter for smoothing.
-  - The code retains the numerical integration approach for smoothing by calculating the mean of local patches.
-  - Finally, the code performs median filtering with custom settings and displays the images.
+### Modelação do problema
 
-[Slide 6: Explanation and Significance]
-- Let's discuss the significance of numerical integration, numerical interpolation, and non-linear systems of equations in image processing.
-- Numerical integration allows us to approximate the integral of a function over a range, which is useful for smoothing operations.
-- Numerical interpolation enables us to estimate pixel values between known data points, essential for upscaling and filtering.
-- Non-linear systems of equations arise when solving complex image processing problems, and they often require numerical methods to find solutions efficiently.
+De maneira a desenvolver este tema decidimos modelar um problema. Com ajuda do ChatGPT, chegamos a um problema que o objetivo é desenvolver um algoritmo para imagens pretas e brancas de *upscaling* e *denoising* das mesmas. Para isto é necessário aplicar os conceitos aprendidos na Unidade Curricular definidos previamente.
 
-[Slide 7: Conclusion]
-- In conclusion, we've explored the problem of optimizing image interpolation while still utilizing numerical interpolation and numerical integration.
-- By modifying the original code, we preserved these techniques while enhancing efficiency.
-- Numerical interpolation, numerical integration, and non-linear systems of equations play crucial roles in image processing algorithms.
-- I hope this presentation provided insights into the importance of numerical techniques and their applications in solving image processing problems.
+Originalmente tinhamos como objetivo focar nos sobretudo na parte de integração numérica e sistemas não lineares de equações. Porém deparamo nos com alguns problemas no desenvolvimento do código Matlab.
 
-[Slide 8: Q&A]
-- Thank you for your attention! I'm now open to answering any questions you may have.
+Sendo assim decidimos alterar o nosso foco para um algoritmo que principalmente aplica conceitos de interpolação e integração númerica.
+
+De maneira a desenvolver o nosso código precisamos de arranjar uma imagem que tenha dimensões pequenas e que tenha bastante ruído.
+Para isso vamos utilizar esta imagem de um homem a olhar por um telescópio.
+
+### Solução
+
+Da primeira vez que tentamos desenvolver uma solução para o problema deparamo nos que não estavamos a conseguir desenvolver um código que preenchesse todos os requesitos que definimos na modelação do problema. Por esse motivo decidimos fazer uma pesquisa mais avançada nos métodos usados para os efeitos de *upscailing* e *denoising*.
+
+Deparamo nos com bastantes conhecimentos que são desenvolvidos na unidade curricular ao longo da nossa pesquisa. 
+
+Como podemos ver no nosso código, utilizamos interpolação bicúbica. Esta interpolação deriva diretamente do conceito de splines. Ainda mais esta é bastante utilizada no *upscaling* de imagens. 
+
+Na matemática a interpolação bicúbica é uam extensão da interpolação spline cúbica para interpotlar pontos de daos numa grelha bidimensional. Comparada a interpolação bilinear a superfície interpolada fica mais suave. Podemos desenvolver esta utilizando polinómios de Lagrange, splines cúbicos ou o algoritmo de convolução cúbico.
+
+Ainda mais maneira a criar diminuir o ruído utilizamos um filtro mediano.
+Este filtro ao contrário de outros filtros, usa a mediana da vizinhança para trocar o valor do píxel onde está a iterar.
+
+Depois disso aplicamos um Filtro Gaussiano, este ao contrário do filtro mediano utiliza uma média pesada para substituir os valores do píxel.
+
+De maneira a concluir este algoritmo ainda aplicamos integração numérica de maneira a aumenta o efeito de *smoothing*. Para isto utilizamos a regra do trapézio de maneira a estimar o valor médio de uma área de pixeis.
+
+Ainda mais no código temos simplesmente comandos de maneira a demonstrar e a guardar o output dos ficheiros no sistema.
+
+### Resultados
+
+Como podemos observar nos slides temos aqui alguns dos resultados do processamento do algoritmo, incluindo alguns dos passos intermédios do mesmo.
+
+### Otimizações ChatGPT
+
+De maneira a utilizar o ChatGPT o melhor possível achamos que seria interessante recorrer ao mesmo de forma a melhorar o nosso código. Para isso demos lhe o contexto do trabalho e o código desenvolvido, porém mesmo assim deparamo nos com o facto que este confudia temas como integração numérica e acabava por retirar usos da mesma, por exemplo como podemos ver no código este retira a utilização da regra do trapézio.
+
+Desta forma achamos que seria então melhor mantermo nos pelo nosso código.
+
+### Conclusões
+
+Como podemos ver pelo desenvolvimento do algoritmo acreditamos que cumprimos o objetivo, porém durante este processo apercebemo-nos que no contexto de Processamento de Imagem, os conceitos lecionados na UC podem ser muito úteis.
+
+Ainda mais, ao longo do projeto conseguimos formar uma melhor apreciação pelo ChatGPT como uma ferramenta de auxílio no desenvolvimento de trabalhos, algo bastante refrescante do que simplesmente limitar o uso do mesmo. Porém chegamos a conclusão que nem sempre este está correto por isso devemos levar as informações concluídas através do mesmo não como uma verdade absoluta. Desta forma consideramos que este é uma ferramenta bastante útil mas como qualquer ferramenta é necessário saber usá-la.
+
+Para concluir creio que este trabalho foi bastante inovador nos métodos que nos pediram para o desenvolver e a nosso ver foi um trabalho bastante engraçado de fazer. Acreditamos que o que aprendemos relativamente ao uso do ChatGPT como aos conceitos da unidade curricular virão a ser uteis no nosso futuro académico e profissional.
+
